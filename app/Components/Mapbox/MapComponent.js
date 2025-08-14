@@ -7,7 +7,7 @@ function FlyToActiveCity({ activeCityCords }) {
   const map = useMap();
 
   useEffect(() => {
-    if (activeCityCords) {
+    if (activeCityCords && activeCityCords.lat && activeCityCords.lon) {
       const zoomLev = 13;
       const flyToOptions = {
         duration: 1.5,
@@ -24,7 +24,18 @@ function FlyToActiveCity({ activeCityCords }) {
   return null;
 }
 
-function MapComponent({ activeCityCoords }) {
+function MapComponent({ activeCityCords }) {
+  // Additional safety check
+  if (!activeCityCords || !activeCityCords.lat || !activeCityCords.lon) {
+    return (
+      <div className="flex-1 basis-[50%] border rounded-lg p-4">
+        <div className="h-full w-full flex items-center justify-center">
+          <p>Invalid coordinates</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className="flex-1 basis-[50%] border rounded-lg"

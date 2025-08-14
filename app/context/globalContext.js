@@ -9,7 +9,9 @@ const GlobalContext = createContext();
 const GlobalContextUpdate = createContext();
 
 export const GlobalContextProvider = ({ children }) => {
-  const [forecast, setForecast] = useState({});
+  const [forecast, setForecast] = useState({
+    coord: { lat: 51.752021, lon: -1.257726 } // Default London coordinates
+  });
   const [geoCodedList, setGeoCodedList] = useState(defaultStates);
   const [inputValue, setInputValue] = useState("");
 
@@ -103,6 +105,14 @@ export const GlobalContextProvider = ({ children }) => {
     fetchFiveDayForecast(activeCityCoords[0], activeCityCoords[1]);
     fetchUvIndex(activeCityCoords[0], activeCityCoords[1]);
   }, [activeCityCoords]);
+
+  // Fetch initial data on mount
+  useEffect(() => {
+    fetchForecast(activeCityCoords[0], activeCityCoords[1]);
+    fetchAirQuality(activeCityCoords[0], activeCityCoords[1]);
+    fetchFiveDayForecast(activeCityCoords[0], activeCityCoords[1]);
+    fetchUvIndex(activeCityCoords[0], activeCityCoords[1]);
+  }, []); // Empty dependency array for initial fetch
 
   return (
     <GlobalContext.Provider

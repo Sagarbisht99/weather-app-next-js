@@ -13,23 +13,66 @@ const MapComponent = dynamic(() => import("./MapComponent"), {
       </div>
     </div>
   ),
+  onError: (error) => {
+    console.error("Failed to load map component:", error);
+    return (
+      <div className="flex-1 basis-[50%] border rounded-lg p-4">
+        <div className="h-full w-full flex items-center justify-center">
+          <p>Failed to load map</p>
+        </div>
+      </div>
+    );
+  },
 });
 
 function Mapbox() {
   const { forecast } = useGlobalContext();
+  
   const activeCityCoords = forecast?.coord;
 
-  if (!forecast || !forecast.coord || !activeCityCoords) {
+  // More detailed check
+  if (!forecast) {
     return (
       <div className="flex-1 basis-[50%] border rounded-lg p-4">
         <div className="h-full w-full flex items-center justify-center">
-          <p>Loading...</p>
+          <p>No forecast data</p>
         </div>
       </div>
     );
   }
 
-  return <MapComponent activeCityCoords={activeCityCoords} />;
+  if (!forecast.coord) {
+    return (
+      <div className="flex-1 basis-[50%] border rounded-lg p-4">
+        <div className="h-full w-full flex items-center justify-center">
+          <p>No coordinate data</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!activeCityCoords || !activeCityCoords.lat || !activeCityCoords.lon) {
+    return (
+      <div className="flex-1 basis-[50%] border rounded-lg p-4">
+        <div className="h-full w-full flex items-center justify-center">
+          <p>Invalid coordinates: {JSON.stringify(activeCityCoords)}</p>
+        </div>
+      </div>
+    );
+  }
+
+  try {
+    return <MapComponent activeCityCoords={activeCityCoords} />;
+  } catch (error) {
+    console.error("Error rendering map:", error);
+    return (
+      <div className="flex-1 basis-[50%] border rounded-lg p-4">
+        <div className="h-full w-full flex items-center justify-center">
+          <p>Error loading map</p>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default Mapbox;
