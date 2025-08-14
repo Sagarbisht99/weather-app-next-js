@@ -1,6 +1,9 @@
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
+// Force dynamic execution (no static generation)
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
     const apiKey = process.env.OPENWEATHERMAP_API_KEY;

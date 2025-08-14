@@ -1,66 +1,35 @@
 "use client";
-import React, { useEffect } from "react";
-import { MapContainer, TileLayer, useMap } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+import React, { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useGlobalContext } from "@/app/context/globalContext";
 
-function FlyToActiveCity({ activeCityCords }) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (activeCityCords) {
-      const zoomLev = 13;
-      const flyToOptions = {
-        duration: 1.5,
-      };
-
-      map.flyTo(
-        [activeCityCords.lat, activeCityCords.lon],
-        zoomLev,
-        flyToOptions
-      );
-    }
-  }, [activeCityCords, map]);
-
-  return null;
-}
+// Dynamically import the map component to avoid SSR issues
+const MapComponent = dynamic(() => import("./MapComponent"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex-1 basis-[50%] border rounded-lg p-4">
+      <div className="h-full w-full flex items-center justify-center">
+        <p>Loading map...</p>
+      </div>
+    </div>
+  ),
+});
 
 function Mapbox() {
-  const { forecast } = useGlobalContext(); // Your coordinates
+  const { forecast } = useGlobalContext();
+  const activeCityCoords = forecast?.coord;
 
-  const activeCityCords = forecast?.coord;
-
-  if (!forecast || !forecast.coord || !activeCityCords) {
+  if (!forecast || !forecast.coord || !activeCityCoords) {
     return (
-      <div>
-        <h1>Loading</h1>
+      <div className="flex-1 basis-[50%] border rounded-lg p-4">
+        <div className="h-full w-full flex items-center justify-center">
+          <p>Loading...</p>
+        </div>
       </div>
     );
   }
 
-  return (
-    <div
-      className="flex-1 basis-[50%] border rounded-lg"
-      style={{
-        padding: "1rem",
-      }}
-    >
-      <MapContainer
-        center={[activeCityCords.lat, activeCityCords.lon]}
-        zoom={13}
-        scrollWheelZoom={false}
-        className="rounded-lg m-4"
-        style={{ height: "100%", width: "100%" }}
-      >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        />
-
-        <FlyToActiveCity activeCityCords={activeCityCords} />
-      </MapContainer>
-    </div>
-  );
+  return <MapComponent activeCityCoords={activeCityCoords} />;
 }
 
 export default Mapbox;

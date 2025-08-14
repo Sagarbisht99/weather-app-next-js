@@ -95,7 +95,9 @@ function Navbar() {
                   rx="3"
                   fill="currentColor"
                   className="transform origin-top"
-                  style={{ animation: "legKick 0.8s ease-in-out infinite reverse" }}
+                  style={{
+                    animation: "legKick 0.8s ease-in-out infinite reverse",
+                  }}
                 />
 
                 {/* Feet */}
@@ -145,29 +147,55 @@ function Navbar() {
       {/* CSS Animations */}
       <style jsx>{`
         @keyframes runningMan {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-1px); }
+          0%,
+          100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-1px);
+          }
         }
-        
+
         @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-2px) rotate(1deg); }
+          0%,
+          100% {
+            transform: translateY(0px) rotate(0deg);
+          }
+          50% {
+            transform: translateY(-2px) rotate(1deg);
+          }
         }
-        
+
         @keyframes armSwing {
-          0% { transform: rotate(-15deg); }
-          100% { transform: rotate(15deg); }
+          0% {
+            transform: rotate(-15deg);
+          }
+          100% {
+            transform: rotate(15deg);
+          }
         }
-        
+
         @keyframes legKick {
-          0%, 100% { transform: rotate(0deg); }
-          25% { transform: rotate(15deg); }
-          75% { transform: rotate(-10deg); }
+          0%,
+          100% {
+            transform: rotate(0deg);
+          }
+          25% {
+            transform: rotate(15deg);
+          }
+          75% {
+            transform: rotate(-10deg);
+          }
         }
-        
+
         @keyframes footStep {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-1px); }
+          0%,
+          100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-1px);
+          }
         }
       `}</style>
     </>
