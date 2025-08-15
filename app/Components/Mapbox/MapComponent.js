@@ -3,34 +3,53 @@ import React, { useEffect } from "react";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-function FlyToActiveCity({ activeCityCords }) {
+function FlyToActiveCity({ activeCityCoords }) {
   const map = useMap();
 
   useEffect(() => {
-    if (activeCityCords && activeCityCords.lat && activeCityCords.lon) {
+    if (activeCityCoords && activeCityCoords.lat && activeCityCoords.lon) {
+      const lat = parseFloat(activeCityCoords.lat);
+      const lon = parseFloat(activeCityCoords.lon);
+      
+      // Validate coordinates are within valid ranges
+      if (isNaN(lat) || isNaN(lon) || lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+        console.error("Invalid coordinates:", { lat, lon });
+        return;
+      }
+
       const zoomLev = 13;
       const flyToOptions = {
         duration: 1.5,
       };
 
-      map.flyTo(
-        [activeCityCords.lat, activeCityCords.lon],
-        zoomLev,
-        flyToOptions
-      );
+      map.flyTo([lat, lon], zoomLev, flyToOptions);
     }
-  }, [activeCityCords, map]);
+  }, [activeCityCoords, map]);
 
   return null;
 }
 
-function MapComponent({ activeCityCords }) {
-  // Additional safety check
-  if (!activeCityCords || !activeCityCords.lat || !activeCityCords.lon) {
+function MapComponent({ activeCityCoords }) {
+  // Enhanced coordinate validation
+  if (!activeCityCoords || !activeCityCoords.lat || !activeCityCoords.lon) {
     return (
       <div className="flex-1 basis-[50%] border rounded-lg p-4">
         <div className="h-full w-full flex items-center justify-center">
           <p>Invalid coordinates</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Convert and validate coordinates
+  const lat = parseFloat(activeCityCoords.lat);
+  const lon = parseFloat(activeCityCoords.lon);
+
+  if (isNaN(lat) || isNaN(lon) || lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+    return (
+      <div className="flex-1 basis-[50%] border rounded-lg p-4">
+        <div className="h-full w-full flex items-center justify-center">
+          <p>Invalid coordinates: {lat}, {lon}</p>
         </div>
       </div>
     );
@@ -44,7 +63,7 @@ function MapComponent({ activeCityCords }) {
       }}
     >
       <MapContainer
-        center={[activeCityCords.lat, activeCityCords.lon]}
+        center={[lat, lon]}
         zoom={13}
         scrollWheelZoom={false}
         className="rounded-lg m-4"
@@ -55,7 +74,7 @@ function MapComponent({ activeCityCords }) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
 
-        <FlyToActiveCity activeCityCords={activeCityCords} />
+        <FlyToActiveCity activeCityCoords={activeCityCoords} />
       </MapContainer>
     </div>
   );
