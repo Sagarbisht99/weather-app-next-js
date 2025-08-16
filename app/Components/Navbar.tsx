@@ -6,6 +6,7 @@ import { github } from "../utils/Icons";
 import ThemeDropdown from "./ThemeDropdown/ThemeDropdown";
 import SearchDialog from "./SearchDialog/SearchDialog";
 import { useGlobalContext } from "../context/globalContext";
+import Link from "next/link";
 
 function Navbar() {
   const router = useRouter();
@@ -132,14 +133,15 @@ function Navbar() {
           <div className="btn-group flex items-center gap-2">
             <ThemeDropdown />
 
-            <Button
-              className="source-code-btn flex items-center gap-2"
-              onClick={() => {
-                router.push("https://github.com");
-              }}
+            <Link
+              href="https://github.com/Sagarbisht99/weather-app-next-js"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              {github} Source Code
-            </Button>
+              <Button className="source-code-btn flex items-center gap-2">
+                {github} Source Code
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
